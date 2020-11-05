@@ -36,9 +36,9 @@
 
 static const char *TAG = "app";
 
-static char *username = "testuser1"; //user 
+static char *username = "testuser1"; //user and password if required by the mqtt broker
 static char *password = "password";
-static char *node_id = "123123";
+static char *node_id = "123123"; // the node will post on the topic node_id/ 
 
 /* Signal Wi-Fi events on this event-group */
 const int WIFI_CONNECTED_EVENT = BIT0;
