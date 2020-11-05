@@ -9,6 +9,10 @@
 static char *TAG;
 static esp_mqtt_client_handle_t client;
 
+// certificate for mqtts
+extern const uint8_t ineltek_broker_pem_start[]   asm("_binary_ineltek_broker_pem_start");
+extern const uint8_t ineltek_broker_pem_end[]   asm("_binary_ineltek_broker_pem_end");
+
 static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
 {
     esp_mqtt_client_handle_t client = event->client;
@@ -63,10 +67,17 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 void mqtt_init(char *username,char *password, char *TAG_in){
     TAG = TAG_in;
     char uri[128];
-    sprintf(uri,"mqtt://%s:%s@%s",username,password,MQTT_BROKER_URL);
+    #ifndef SECURE_MQTT_CONNECTION
+        sprintf(uri,"mqtt://%s:%s@%s",username,password,MQTT_BROKER_URL);
+    #else
+        sprintf(uri,"mqtts://%s:%s@%s",username,password,MQTT_BROKER_URL);
+    #endif
     printf("*** URI: %s",uri);
     esp_mqtt_client_config_t mqtt_cfg = {
         .uri = uri,
+        #ifdef SECURE_MQTT_CONNECTION
+        .cert_pem = (const char *)ineltek_broker_pem_start,
+        #endif
     };
     client = esp_mqtt_client_init(&mqtt_cfg);
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, client);

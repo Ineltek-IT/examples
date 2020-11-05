@@ -7,3 +7,5 @@ This repo contains some examples and tutorials - both code and schematics.
 
 
 ## MQTT Temperature sensor
+
+Simple MQTT temperature sensor IoT node, which waits for the provisioning of WiFi credentials and then sends a temperature measurement every 5 seconds to a broker. It's based on the ESP32-S2-Saola-1.

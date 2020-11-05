@@ -19,6 +19,8 @@
 //#define LOG_HTTP
 
 
+#define SECURE_MQTT_CONNECTION
+
 
 
 
@@ -28,3 +30,5 @@
 
 #define SNTP_SERVER "pool.ntp.org"
 #define MQTT_BROKER_URL "ineltek.hopto.org:1883"
+
+

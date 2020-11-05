@@ -21,6 +21,11 @@
 
 #include <wifi_provisioning/manager.h>
 
+#include "esp_sleep.h"
+
+#include "app_priv.h"
+#include "configuration.h"
+
 #ifdef CONFIG_EXAMPLE_PROV_TRANSPORT_BLE
 #include <wifi_provisioning/scheme_ble.h>
 #endif /* CONFIG_EXAMPLE_PROV_TRANSPORT_BLE */
@@ -31,9 +36,23 @@
 
 static const char *TAG = "app";
 
+static char *username = "testuser1"; //user 
+static char *password = "password";
+static char *node_id = "123123";
+
 /* Signal Wi-Fi events on this event-group */
 const int WIFI_CONNECTED_EVENT = BIT0;
 static EventGroupHandle_t wifi_event_group;
+RTC_DATA_ATTR static bool synchronized = 0;
+
+
+/*Callback after sntp synch*/
+static void time_synch_cb(struct timeval *tv){
+    printf("Sincronizzato: %d\n",(int)tv->tv_sec);
+    synchronized = 1;
+}
+
+
 
 /* Event handler for catching system events */
 static void event_handler(void* arg, esp_event_base_t event_base,
@@ -275,8 +294,36 @@ void app_main(void)
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_EVENT, false, true, portMAX_DELAY);
 
     /* Start main application now */
+
+
+    start_sntp_synch(time_synch_cb);
+    temperature_init();
+    struct timeval tt;
+    mqtt_init(username,password, TAG);
+    const int deep_sleep_sec = 5;
+    char message[64];
+
     while (1) {
-        ESP_LOGI(TAG, "Hello World!");
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        gettimeofday(&tt,NULL);
+        int timestamp = (int)tt.tv_sec;
+        float temperature = get_temperature();
+        #ifdef LOG_UART
+            printf("Orario Unix: %d\n",timestamp);
+            printf("Temperatura: %f\n\n",temperature);
+        #endif
+        #ifdef LOG_MQTT
+            sprintf(message,"{'temperature':'%f','timestamp':'%d'",temperature,timestamp);
+            mqtt_publish("/test/test",message);
+        #endif
+
+        vTaskDelay(500 / portTICK_PERIOD_MS); //let the uart write to the monitor
+        if(synchronized==1){
+            printf("Entering deep sleep for %d seconds\n", deep_sleep_sec);
+            #ifdef RTC_INTERNAL
+                esp_deep_sleep(1000000LL * deep_sleep_sec);
+            #endif
+        }else{
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
     }
 }

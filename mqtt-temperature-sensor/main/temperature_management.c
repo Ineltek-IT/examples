@@ -2,13 +2,15 @@
 Lib for temperature management
 */
 #include "app_priv.h"
-#include "configuration.h"
+
 
 
 static float temperature;
 
 
-
+/*
+* @brief    set up the temperature sensor peripheral
+*/
 void temperature_init(){
 
 #ifdef TEMPERATURE_SENSOR_INTERNAL
