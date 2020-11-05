@@ -5,6 +5,7 @@
 //#define RTC_INTERNAL
 
 
+
 /*
 * Type of sensor: internal of Microchip (?)
 */
@@ -29,6 +30,6 @@
 */
 
 #define SNTP_SERVER "pool.ntp.org"
-#define MQTT_BROKER_URL "ineltek.hopto.org:1883"
+#define MQTT_BROKER_URL "mqtt.eclipse.org:8883"
 
 

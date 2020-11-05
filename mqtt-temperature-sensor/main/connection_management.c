@@ -10,8 +10,8 @@ static char *TAG;
 static esp_mqtt_client_handle_t client;
 
 // certificate for mqtts
-extern const uint8_t ineltek_broker_pem_start[]   asm("_binary_ineltek_broker_pem_start");
-extern const uint8_t ineltek_broker_pem_end[]   asm("_binary_ineltek_broker_pem_end");
+extern const uint8_t mqtt_broker_pem_start[]   asm("_binary_mqtt_broker_pem_start");
+extern const uint8_t mqtt_broker_pem_end[]   asm("_binary_mqtt_broker_pem_end");
 
 static esp_err_t mqtt_event_handler_cb(esp_mqtt_event_handle_t event)
 {
