@@ -48,7 +48,7 @@ RTC_DATA_ATTR static bool synchronized = 0;
 
 /*Callback after sntp synch*/
 static void time_synch_cb(struct timeval *tv){
-    printf("Sincronizzato: %d\n",(int)tv->tv_sec);
+    printf("Synchronized: %d\n",(int)tv->tv_sec);
     synchronized = 1;
 }
 
@@ -293,23 +293,23 @@ void app_main(void)
     /* Wait for Wi-Fi connection */
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_EVENT, false, true, portMAX_DELAY);
 
-    /* Start main application now */
+    /* HERE STARTS THE MAIN APPLICATION */
 
-
+    //sntp
     start_sntp_synch(time_synch_cb);
     temperature_init();
     struct timeval tt;
     mqtt_init(username,password, TAG);
     const int deep_sleep_sec = 5;
     char message[64];
-
+	
     while (1) {
         gettimeofday(&tt,NULL);
         int timestamp = (int)tt.tv_sec;
         float temperature = get_temperature();
         #ifdef LOG_UART
-            printf("Orario Unix: %d\n",timestamp);
-            printf("Temperatura: %f\n\n",temperature);
+            printf("Unix time: %d\n",timestamp);
+            printf("Temperature: %f\n\n",temperature);
         #endif
         #ifdef LOG_MQTT
             sprintf(message,"{'temperature':'%f','timestamp':'%d'",temperature,timestamp);
@@ -319,9 +319,9 @@ void app_main(void)
         vTaskDelay(500 / portTICK_PERIOD_MS); //let the uart write to the monitor
         if(synchronized==1){
             printf("Entering deep sleep for %d seconds\n", deep_sleep_sec);
-            #ifdef RTC_INTERNAL
-                esp_deep_sleep(1000000LL * deep_sleep_sec);
-            #endif
+
+            esp_deep_sleep(1000000LL * deep_sleep_sec);
+
         }else{
             vTaskDelay(1000 / portTICK_PERIOD_MS);
         }

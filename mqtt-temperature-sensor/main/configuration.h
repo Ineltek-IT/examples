@@ -1,13 +1,7 @@
-/*
-* Type of RTC: internal or Epson
-*/
-//#define RTC_EPSON
-//#define RTC_INTERNAL
-
 
 
 /*
-* Type of sensor: internal of Microchip (?)
+* Type of sensor
 */
 #define TEMPERATURE_SENSOR_INTERNAL
 
