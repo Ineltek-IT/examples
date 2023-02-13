@@ -1,4 +1,4 @@
-#Get started with ESP-EYE
+# Get started with ESP-EYE
 
 This brief tutorial shows how to start with the first example of ESP-EYE. The required documentation is already all on the espressif esp-who repo but it's somewhat scattered around. 
 
