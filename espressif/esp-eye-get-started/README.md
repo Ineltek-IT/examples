@@ -15,7 +15,7 @@ To install ESP-IDF we will use vscode extension.
 3. Search for the plug-in "Espressif IDF" and install it. 
 4. Configure Espressif IDF: open the command palette (`CTRL-SHIFT-p`) and write "ESP-IDF: Configure ESP-IDF extension option.". Go through the Express configuration. 
 
-For more detail please che reference [1](#references). 
+For more detail please check reference [1](#references). 
 
 ## Download ESP-WHO
 
