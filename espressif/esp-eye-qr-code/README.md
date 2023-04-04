@@ -10,7 +10,7 @@ Please note that there is a minimum distance at which the camera can focus on th
 In the table below are recorded a few couples of lens distance and qr-code side size.  
 
 | Qr-code side length (cm) | Approx. Lens distance (cm) |
----
+|---|---|
 |6.5 | 17 |
 |4 | 3| 
 |2.5|6|
