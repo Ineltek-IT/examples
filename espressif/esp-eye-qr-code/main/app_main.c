@@ -35,7 +35,7 @@ static void decode_task()
 
         if(decoded_num){
             esp_code_scanner_symbol_t result = esp_code_scanner_result(esp_scn);
-            printf("BEGIN_CODE %s END_CODE\n",result.data);
+            printf("{%s}\n",result.data);
         }
         esp_code_scanner_destroy(esp_scn);
 
