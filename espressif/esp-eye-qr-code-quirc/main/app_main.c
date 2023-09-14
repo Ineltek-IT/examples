@@ -67,6 +67,11 @@ static void decode_task()
         exit(1);
     }   
 
+    struct quirc_code code;
+    struct quirc_data data;
+    quirc_decode_error_t err;
+    uint16_t num_codes;
+
     while (1)
     {
         fb = esp_camera_fb_get();
@@ -76,18 +81,32 @@ static void decode_task()
         }
         //printf("Picture Format:%d\nPicture w:%d\th:%d\tlen:%d",fb->format,fb->width,fb->height,fb->len);
         // Decode Progress
-        //rgb565_to_grayscale(grayscale_buffer, fb->buf,fb->len);
+    
+        memcpy(quirc_begin(q, NULL, NULL), fb->buf, fb->len);
+        quirc_end(q);
+        //printf("Detected %d qrcodes\n", quirc_count(q));
 
-        esp_image_scanner_t *esp_scn = esp_code_scanner_create();
-        esp_code_scanner_config_t config = {ESP_CODE_SCANNER_MODE_FAST, ESP_CODE_SCANNER_IMAGE_GRAY, fb->width, fb->height};
-        esp_code_scanner_set_config(esp_scn, config);
-        int decoded_num = esp_code_scanner_scan_image(esp_scn, fb->buf);
+        num_codes = quirc_count(q);
+        for (uint16_t i = 0; i < num_codes; i++) {
 
-        if(decoded_num){
-            esp_code_scanner_symbol_t result = esp_code_scanner_result(esp_scn);
-            printf("{%s}\n",result.data);
+            quirc_extract(q, i, &code);
+            /* Decoding stage */
+            err = quirc_decode(&code, &data);
+            if (err)
+                printf("%d/%d] DECODE FAILED: %s\n", i,num_codes,quirc_strerror(err));
+            else
+                printf("%d/%d]Data: %s\n",i,num_codes,data.payload);
         }
-        esp_code_scanner_destroy(esp_scn);
+        // esp_image_scanner_t *esp_scn = esp_code_scanner_create();
+        // esp_code_scanner_config_t config = {ESP_CODE_SCANNER_MODE_FAST, ESP_CODE_SCANNER_IMAGE_GRAY, fb->width, fb->height};
+        // esp_code_scanner_set_config(esp_scn, config);
+        // int decoded_num = esp_code_scanner_scan_image(esp_scn, fb->buf);
+
+        // if(decoded_num){
+        //     esp_code_scanner_symbol_t result = esp_code_scanner_result(esp_scn);
+        //     printf("{%s}\n",result.data);
+        // }
+        // esp_code_scanner_destroy(esp_scn);
 
 
         esp_camera_fb_return(fb);
@@ -100,5 +119,5 @@ static void decode_task()
 
 void app_main()
 {
-    xTaskCreatePinnedToCore(decode_task, TAG, 4 * 1024, NULL, 6, NULL, 0);
+    xTaskCreatePinnedToCore(decode_task, TAG, 40 * 1024, NULL, 6, NULL, 0);
 }
