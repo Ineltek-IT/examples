@@ -1,7 +1,8 @@
-# Qrcode reading example
+# Qrcode reading with Quirc example
 
 In this examples, after a booting log, the example emits the qr-code read value between two curly brackets followed by a new lines. E.g.
 ```{www.example.com}\n```
+It uses the [quirc](https://github.com/dlbeer/quirc) libray [idf extra component](https://github.com/espressif/idf-extra-components/tree/master/quirc).
 
 ## Notes
 
